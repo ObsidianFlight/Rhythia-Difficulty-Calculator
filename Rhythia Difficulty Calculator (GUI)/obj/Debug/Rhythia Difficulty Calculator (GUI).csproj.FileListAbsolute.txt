@@ -1,0 +1,11 @@
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\bin\Debug\Rhythia Difficulty Calculator (GUI).exe.config
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\bin\Debug\Rhythia Difficulty Calculator (GUI).exe
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\bin\Debug\Rhythia Difficulty Calculator (GUI).pdb
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia Difficulty Calculator (GUI).csproj.AssemblyReference.cache
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia Difficulty Calculator (GUI).csproj.SuggestedBindingRedirects.cache
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia_Difficulty_Calculator__GUI_.Properties.Resources.resources
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia Difficulty Calculator (GUI).csproj.GenerateResource.cache
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia Difficulty Calculator (GUI).csproj.CoreCompileInputs.cache
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia Difficulty Calculator (GUI).exe
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia Difficulty Calculator (GUI).pdb
+D:\Rhythia Difficulty Calculator\Rhythia Difficulty Calculator (GUI)\Rhythia Difficulty Calculator (GUI)\obj\Debug\Rhythia_Difficulty_Calculator__GUI_.Form1.resources
