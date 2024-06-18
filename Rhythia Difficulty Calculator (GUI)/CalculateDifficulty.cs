@@ -23,7 +23,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			return value;
 		}
 
-		public static MapInfo ConvertMap(string mapdata)
+		public static MapInfo ConvertMap(string mapdata, double speed, bool hasName, string name)
 		{
 			double x1 = 0;
 			double x2 = 0;
@@ -36,6 +36,10 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			//Splits mapdata into an array so I can use it's information
 			string[] mapraw = mapdata.Split(',');
 			string mapName = mapraw[0];
+			if(hasName == true)
+            {
+				mapName = name;
+            }
 			string[] notesraw = new string[mapraw.Length - 1];
 			double[,] notearray = new double[notesraw.Length, 3];
 			double[,] noteDifficultyArray = new double[notesraw.Length, 10];
@@ -45,7 +49,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 				string[] data = notesraw[i].Split('|');
 				notearray[i, 0] = Convert.ToDouble(data[0]);
 				notearray[i, 1] = Convert.ToDouble(data[1]);
-				notearray[i, 2] = Convert.ToDouble(data[2]);
+				notearray[i, 2] = Convert.ToDouble(data[2]) / speed;
 			}
 			int stack = 0;
 			//Grabs all the information I need from the notes, Most likely done in an unefficient manner.
@@ -281,13 +285,13 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			double averageDifficulty = 0;
 			for (int i = 0; i < noteDifficultyArray.GetLength(0); i++)
 			{
-				if (notesBehind < 79) { notesBehind++; }
+				if (notesBehind < 28) { notesBehind++; }
 				double[,] tempDiff = new double[notesBehind, 2];
 				for (int j = 0; j < tempDiff.GetLength(0); j++)
 				{
 					tempDiff[j, 0] = noteDifficultyArray[i - j, 0]; //Gets Time in Song
 					tempDiff[j, 1] = noteDifficultyArray[i - j, 7]; //Gets Difficulty
-					if (tempDiff[j, 0] < noteDifficultyArray[i, 0] - 7000)
+					if (tempDiff[j, 0] < noteDifficultyArray[i, 0] - 2500)
 					{
 						notesBehind--;
 					}
@@ -297,7 +301,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 				{
 					tempMaxDifficulty += tempDiff[j, 1];
 				}
-				tempMaxDifficulty /= 10;
+				tempMaxDifficulty /= 4.2;
 				if (tempMaxDifficulty > prevTempDiff)
 				{
 					tempMaxDifficulty -= Math.Log(tempMaxDifficulty - prevTempDiff);
@@ -311,7 +315,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 				averageDifficulty += tempMaxDifficulty;
 			}
 			averageDifficulty = averageDifficulty / noteDifficultyArray.GetLength(0);
-			averageDifficulty = averageDifficulty * ((Math.Log(noteDifficultyArray[noteDifficultyArray.GetLength(0) - 1, 0] / 1000 / 120) / 2) + 1);
+			averageDifficulty = averageDifficulty * (CalculateDifficulty.Clamp((Math.Log(noteDifficultyArray[noteDifficultyArray.GetLength(0) - 1, 0] / 1000 / 120) / 2), 1, 999999));
 			averageDifficulty /= 4;
 			maxDifficulty /= 4;
 			overallDifficulty = averageDifficulty * ((1 - (averageDifficulty / (maxDifficulty))) + 1);
@@ -324,6 +328,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			theData.OverallDifficulty = overallDifficulty;
 			theData.AverageDifficulty = averageDifficulty;
 			theData.MaxDifficulty = maxDifficulty;
+			theData.mapdata = mapdata;
 			return theData;
 		}
 	}
@@ -335,5 +340,6 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 		public double AverageDifficulty { get; set; }
 		public double MaxDifficulty { get; set; }
 		public int index { get; set; }
+		public string mapdata { get; set; }
     }
 }

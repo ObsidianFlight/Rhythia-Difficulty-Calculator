@@ -14,6 +14,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 {
     public partial class form1 : Form
     {
+        double speedmodifier = 1;
         List<MapInfo> mapList = new List<MapInfo>();
         int sortType = 1;
         public form1()
@@ -23,19 +24,25 @@ namespace Rhythia_Difficulty_Calculator__GUI_
         OpenFileDialog openFileDialog1;
         private void button1_Click(object sender, EventArgs e)
         {
-            openFileDialog1 = new OpenFileDialog();
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            using (var dialog = new OpenFileDialog
             {
-                try
+                Title = "Select Map List File",
+                Filter = "Text Documents (*.txt)|*.txt"
+            })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    var sr = new StreamReader(openFileDialog1.FileName);
-                    mapList.Add(CalculateDifficulty.ConvertMap(sr.ReadToEnd()));
-                    UpdateTextbox();
-                }
-                catch (SecurityException ex)
-                {
-                    MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
-                    $"Details:\n\n{ex.StackTrace}");
+                    try
+                    {
+                        var sr = new StreamReader(dialog.FileName);
+                        mapList.Add(CalculateDifficulty.ConvertMap(sr.ReadToEnd(), speedmodifier, false, " "));
+                        UpdateTextbox();
+                    }
+                    catch (SecurityException ex)
+                    {
+                        MessageBox.Show($"Security error.\n\nError message: {ex.Message}\n\n" +
+                        $"Details:\n\n{ex.StackTrace}");
+                    }
                 }
             }
         }
@@ -186,6 +193,97 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                 }
             }
             UpdateTextbox();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            // Save List Button
+            using (var sfd = new SaveFileDialog
+            {
+                Title = "Save Colorset",
+                Filter = "Text Documents (*.maplist)|*.maplist"
+            })
+            {
+                var result = sfd.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+
+                    SaveMapList(sfd.FileName);
+                }
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            // Load List Button
+            using (var dialog = new OpenFileDialog
+            {
+                Title = "Select Map List File",
+                Filter = "Text Documents (*.maplist)|*.maplist"
+            })
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    LoadMapList(dialog.FileName);
+                }
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            // Set Speed Button
+            try
+            {
+                speedmodifier = Double.Parse(richTextBox9.Text);
+            }
+            catch { speedmodifier = 1; }
+            for(int i = 0; i < mapList.Count; i++)
+            {
+                mapList[i] = CalculateDifficulty.ConvertMap(mapList[i].mapdata, speedmodifier, true, mapList[i].MapName);
+            }
+            UpdateTextbox();
+        }
+
+        private void richTextBox9_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoadMapList(string file)
+        {
+            if (file == null)
+                return;
+
+            try
+            {
+                mapList.Clear();
+                string[] theMapList = File.ReadAllLines(file);
+                foreach(var map in theMapList)
+                {
+                    string[] theMapData = map.Split('│');
+                    mapList.Add(CalculateDifficulty.ConvertMap(theMapData[1], speedmodifier, true, theMapData[0]));
+                }
+                UpdateTextbox();
+            }
+            catch { }
+        }
+
+        private void SaveMapList(string file)
+        {
+            if (file == null)
+                return;
+
+            string data = "";
+            try
+            {
+                foreach(var map in mapList)
+                {
+                    data += $"{map.MapName}│{map.mapdata}\n";
+                }
+                File.WriteAllText(file, data, Encoding.UTF8);
+            }
+            catch {}
         }
     }
 }

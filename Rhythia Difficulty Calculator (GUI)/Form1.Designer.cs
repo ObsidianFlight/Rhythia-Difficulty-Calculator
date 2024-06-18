@@ -44,6 +44,10 @@
             this.richTextBox7 = new System.Windows.Forms.RichTextBox();
             this.button7 = new System.Windows.Forms.Button();
             this.richTextBox8 = new System.Windows.Forms.RichTextBox();
+            this.button8 = new System.Windows.Forms.Button();
+            this.button9 = new System.Windows.Forms.Button();
+            this.richTextBox9 = new System.Windows.Forms.RichTextBox();
+            this.button10 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -64,11 +68,11 @@
             // 
             this.richTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
             this.richTextBox1.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox1.Location = new System.Drawing.Point(74, 311);
+            this.richTextBox1.Location = new System.Drawing.Point(74, 283);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
             this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox1.Size = new System.Drawing.Size(189, 202);
+            this.richTextBox1.Size = new System.Drawing.Size(189, 230);
             this.richTextBox1.TabIndex = 3;
             this.richTextBox1.Text = "";
             this.richTextBox1.WordWrap = false;
@@ -80,9 +84,9 @@
             this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
             this.button2.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button2.ForeColor = System.Drawing.Color.White;
-            this.button2.Location = new System.Drawing.Point(74, 228);
+            this.button2.Location = new System.Drawing.Point(74, 237);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(189, 77);
+            this.button2.Size = new System.Drawing.Size(189, 40);
             this.button2.TabIndex = 4;
             this.button2.Text = "Sort by Name";
             this.button2.UseVisualStyleBackColor = false;
@@ -94,9 +98,9 @@
             this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
             this.button3.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button3.ForeColor = System.Drawing.Color.White;
-            this.button3.Location = new System.Drawing.Point(269, 228);
+            this.button3.Location = new System.Drawing.Point(269, 237);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(169, 77);
+            this.button3.Size = new System.Drawing.Size(169, 40);
             this.button3.TabIndex = 5;
             this.button3.Text = "Sort by Overall";
             this.button3.UseVisualStyleBackColor = false;
@@ -108,9 +112,9 @@
             this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
             this.button4.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button4.ForeColor = System.Drawing.Color.White;
-            this.button4.Location = new System.Drawing.Point(444, 228);
+            this.button4.Location = new System.Drawing.Point(444, 237);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(169, 77);
+            this.button4.Size = new System.Drawing.Size(169, 40);
             this.button4.TabIndex = 6;
             this.button4.Text = "Sort by Average";
             this.button4.UseVisualStyleBackColor = false;
@@ -122,9 +126,9 @@
             this.button5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
             this.button5.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button5.ForeColor = System.Drawing.Color.White;
-            this.button5.Location = new System.Drawing.Point(619, 228);
+            this.button5.Location = new System.Drawing.Point(619, 237);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(169, 77);
+            this.button5.Size = new System.Drawing.Size(169, 40);
             this.button5.TabIndex = 7;
             this.button5.Text = "Sort by Max";
             this.button5.UseVisualStyleBackColor = false;
@@ -134,11 +138,11 @@
             // 
             this.richTextBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
             this.richTextBox2.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox2.Location = new System.Drawing.Point(269, 311);
+            this.richTextBox2.Location = new System.Drawing.Point(269, 283);
             this.richTextBox2.Name = "richTextBox2";
             this.richTextBox2.ReadOnly = true;
             this.richTextBox2.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox2.Size = new System.Drawing.Size(169, 202);
+            this.richTextBox2.Size = new System.Drawing.Size(169, 230);
             this.richTextBox2.TabIndex = 8;
             this.richTextBox2.Text = "";
             this.richTextBox2.WordWrap = false;
@@ -147,11 +151,11 @@
             // 
             this.richTextBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
             this.richTextBox3.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox3.Location = new System.Drawing.Point(444, 311);
+            this.richTextBox3.Location = new System.Drawing.Point(444, 283);
             this.richTextBox3.Name = "richTextBox3";
             this.richTextBox3.ReadOnly = true;
             this.richTextBox3.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox3.Size = new System.Drawing.Size(169, 202);
+            this.richTextBox3.Size = new System.Drawing.Size(169, 230);
             this.richTextBox3.TabIndex = 9;
             this.richTextBox3.Text = "";
             this.richTextBox3.WordWrap = false;
@@ -160,11 +164,11 @@
             // 
             this.richTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
             this.richTextBox4.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox4.Location = new System.Drawing.Point(619, 311);
+            this.richTextBox4.Location = new System.Drawing.Point(619, 283);
             this.richTextBox4.Name = "richTextBox4";
             this.richTextBox4.ReadOnly = true;
             this.richTextBox4.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.richTextBox4.Size = new System.Drawing.Size(169, 202);
+            this.richTextBox4.Size = new System.Drawing.Size(169, 230);
             this.richTextBox4.TabIndex = 10;
             this.richTextBox4.Text = "";
             this.richTextBox4.WordWrap = false;
@@ -187,10 +191,10 @@
             // 
             this.richTextBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
             this.richTextBox5.ForeColor = System.Drawing.SystemColors.Window;
-            this.richTextBox5.Location = new System.Drawing.Point(12, 311);
+            this.richTextBox5.Location = new System.Drawing.Point(12, 283);
             this.richTextBox5.Name = "richTextBox5";
             this.richTextBox5.ReadOnly = true;
-            this.richTextBox5.Size = new System.Drawing.Size(56, 202);
+            this.richTextBox5.Size = new System.Drawing.Size(56, 230);
             this.richTextBox5.TabIndex = 13;
             this.richTextBox5.Text = "";
             this.richTextBox5.WordWrap = false;
@@ -243,10 +247,66 @@
             this.richTextBox8.Location = new System.Drawing.Point(12, 95);
             this.richTextBox8.Name = "richTextBox8";
             this.richTextBox8.ReadOnly = true;
-            this.richTextBox8.Size = new System.Drawing.Size(776, 127);
+            this.richTextBox8.Size = new System.Drawing.Size(776, 90);
             this.richTextBox8.TabIndex = 17;
             this.richTextBox8.Text = resources.GetString("richTextBox8.Text");
             this.richTextBox8.WordWrap = false;
+            // 
+            // button8
+            // 
+            this.button8.AutoSize = true;
+            this.button8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
+            this.button8.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button8.ForeColor = System.Drawing.Color.White;
+            this.button8.Location = new System.Drawing.Point(74, 191);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(189, 40);
+            this.button8.TabIndex = 18;
+            this.button8.Text = "Save List";
+            this.button8.UseVisualStyleBackColor = false;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // button9
+            // 
+            this.button9.AutoSize = true;
+            this.button9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
+            this.button9.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button9.ForeColor = System.Drawing.Color.White;
+            this.button9.Location = new System.Drawing.Point(269, 191);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(169, 40);
+            this.button9.TabIndex = 19;
+            this.button9.Text = "Load List";
+            this.button9.UseVisualStyleBackColor = false;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // richTextBox9
+            // 
+            this.richTextBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(26)))), ((int)(((byte)(26)))), ((int)(((byte)(26)))));
+            this.richTextBox9.Font = new System.Drawing.Font("Segoe UI Historic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.richTextBox9.ForeColor = System.Drawing.SystemColors.Window;
+            this.richTextBox9.Location = new System.Drawing.Point(619, 191);
+            this.richTextBox9.Multiline = false;
+            this.richTextBox9.Name = "richTextBox9";
+            this.richTextBox9.Size = new System.Drawing.Size(169, 40);
+            this.richTextBox9.TabIndex = 20;
+            this.richTextBox9.Text = "";
+            this.richTextBox9.WordWrap = false;
+            this.richTextBox9.TextChanged += new System.EventHandler(this.richTextBox9_TextChanged);
+            // 
+            // button10
+            // 
+            this.button10.AutoSize = true;
+            this.button10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(20)))), ((int)(((byte)(86)))));
+            this.button10.Font = new System.Drawing.Font("Yu Gothic UI Semilight", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button10.ForeColor = System.Drawing.Color.White;
+            this.button10.Location = new System.Drawing.Point(444, 191);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(169, 40);
+            this.button10.TabIndex = 22;
+            this.button10.Text = "Set Speed";
+            this.button10.UseVisualStyleBackColor = false;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
             // 
             // form1
             // 
@@ -254,6 +314,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(21)))), ((int)(((byte)(28)))));
             this.ClientSize = new System.Drawing.Size(800, 573);
+            this.Controls.Add(this.button10);
+            this.Controls.Add(this.richTextBox9);
+            this.Controls.Add(this.button9);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.richTextBox8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.richTextBox7);
@@ -295,6 +359,10 @@
         private System.Windows.Forms.RichTextBox richTextBox7;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.RichTextBox richTextBox8;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.RichTextBox richTextBox9;
+        private System.Windows.Forms.Button button10;
     }
 }
 
