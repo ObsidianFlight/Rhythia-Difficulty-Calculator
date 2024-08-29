@@ -117,10 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="richTextBox8.Text" xml:space="preserve">
-    <value>Put a number, like "3" into the bottom left box, to match the numbers above it that relate to the maps.
-Then, either press Remove Map in List, to remove that map
-Or, to the textbox next to it, enter in the new map name for that slot, and then press Change Name of Map
-</value>
-  </data>
 </root>
