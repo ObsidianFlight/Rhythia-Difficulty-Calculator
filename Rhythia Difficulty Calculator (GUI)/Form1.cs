@@ -36,8 +36,8 @@ namespace Rhythia_Difficulty_Calculator__GUI_
         {
             using (var dialog = new OpenFileDialog
             {
-                Title = "Select Map List Files",
-                Filter = "Text Documents (*.txt)|*.txt",
+                Title = "Select Map Files",
+                Filter = "All Maps (*.txt;*.sspm)|*.txt;*.sspm|Map Data (*.txt)|*.txt|SSPM Files (*.sspm)|*.sspm",
                 Multiselect = true
             })
             {
@@ -45,19 +45,22 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                 {
                     foreach (string file in dialog.FileNames)
                     {
+                        
                         try
                         {
-                            var sr = new StreamReader(file);
-                            if(newCalculator)
+                            if (".sspm" == Path.GetExtension(file))
                             {
-                                //mapList.Add(CalculateDifficulty.ConvertMapNew(sr.ReadToEnd(), speedmodifier, false, " ", speedPowMultiplier, speedDivisor, flowMultiplier, velocityMultiplier, burstMultiplier, noteSize));
-                                mapList.Add(CalculateDifficulty.ConvertMapNew(sr.ReadToEnd(), speedmodifier, false, " "));
+                                string mapdata = CalculateDifficulty.Parse(file);
+                                Console.WriteLine(mapdata);
+                                mapList.Add(CalculateDifficulty.ConvertMapNew(mapdata, speedmodifier, false, " "));
+                                UpdateTextbox();
                             }
                             else
                             {
-                                mapList.Add(CalculateDifficulty.ConvertMap(sr.ReadToEnd(), speedmodifier, false, " "));
+                                var sr = new StreamReader(file);
+                                mapList.Add(CalculateDifficulty.ConvertMapNew(sr.ReadToEnd(), speedmodifier, false, " "));
+                                UpdateTextbox();
                             }
-                            UpdateTextbox();
                         }
                         catch (SecurityException ex)
                         {
@@ -90,6 +93,26 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                     var orderedList1 = mapList.OrderBy(x => x.MapName);
                     foreach (var n in orderedList1)
                     {
+                        if (n.OverallDifficulty <= 0.01 || Double.IsNaN(n.OverallDifficulty))
+                        {
+                            n.OverallDifficulty = 0;
+                        }
+                        if (n.AverageDifficulty <= 0.01 || Double.IsNaN(n.AverageDifficulty))
+                        {
+                            n.AverageDifficulty = 0;
+                        }
+                        if (n.MaxDifficulty <= 0.01 || Double.IsNaN(n.MaxDifficulty))
+                        {
+                            n.MaxDifficulty = 0;
+                        }
+                        if (n.LowDifficulty <= 0.01 || Double.IsNaN(n.LowDifficulty))
+                        {
+                            n.LowDifficulty = 0;
+                        }
+                        if (n.HighDifficulty <= 0.01 || Double.IsNaN(n.HighDifficulty))
+                        {
+                            n.HighDifficulty = 0;
+                        }
                         n.index = index;
                         if (index > firstValue) 
                         {
@@ -398,21 +421,10 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 
         public void speedButtonStuff()
         {
-            if (newCalculator)
-            {
-                //CheckNewCalcOptions();
-                for (int i = 0; i < mapList.Count; i++)
+            for (int i = 0; i < mapList.Count; i++)
                 {
                     mapList[i] = CalculateDifficulty.ConvertMapNew(mapList[i].mapdata, speedmodifier, true, mapList[i].MapName);
                 }
-            }
-            else
-            {
-                for (int i = 0; i < mapList.Count; i++)
-                {
-                    mapList[i] = CalculateDifficulty.ConvertMap(mapList[i].mapdata, speedmodifier, true, mapList[i].MapName);
-                }
-            }
         }
 
         private void richTextBox9_TextChanged(object sender, EventArgs e)
@@ -432,15 +444,8 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                 foreach(var map in theMapList)
                 {
                     string[] theMapData = map.Split('│');
-                    if (newCalculator)
-                    {
-                        //mapList.Add(CalculateDifficulty.ConvertMapNew(theMapData[1], speedmodifier, true, theMapData[0], speedPowMultiplier, speedDivisor, flowMultiplier, velocityMultiplier, burstMultiplier, noteSize));
-                        mapList.Add(CalculateDifficulty.ConvertMapNew(theMapData[1], speedmodifier, true, theMapData[0]));
-                    }
-                    else
-                    {
-                        mapList.Add(CalculateDifficulty.ConvertMap(theMapData[1], speedmodifier, true, theMapData[0]));
-                    }
+                    mapList.Add(CalculateDifficulty.ConvertMapNew(theMapData[1], speedmodifier, true, theMapData[0]));
+                    
                 }
                 UpdateTextbox();
             }
@@ -517,17 +522,17 @@ namespace Rhythia_Difficulty_Calculator__GUI_
             }
         }
 
-        private void button14_Click(object sender, EventArgs e)
+        private void button14_Click_1(object sender, EventArgs e)
         {
-            newCalculator = true;
-            speedButtonStuff();
+            firstValue -= 10;
+            firstValue = (int)CalculateDifficulty.Clamp(firstValue, 0, mapList.Count);
             UpdateTextbox();
         }
 
         private void button15_Click(object sender, EventArgs e)
         {
-            newCalculator = false;
-            speedButtonStuff();
+            firstValue += 10;
+            firstValue = (int)CalculateDifficulty.Clamp(firstValue, 0, mapList.Count);
             UpdateTextbox();
         }
     }
