@@ -438,7 +438,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                             }
 						}
 						else { flowChecker[i] = 2; }
-						noteDifficultyArray[i, 10] = 1;
+						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i-1, 10];
 					}
 					else if (u == -1 & h == -1 & b == -1) {
 
@@ -449,7 +449,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 								flowChecker[i] = 2.5f;
 								if (noteDifficultyArray[i, 2] > 1.7)
 								{
-									flowChecker[i] = 2;
+									flowChecker[i] = 3f;
 								}
 							}
 							else if (notearray[i, 1] < 1.5 && notearray[i, 1] > 0.5)
@@ -457,7 +457,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 								flowChecker[i] = 2.5f;
 								if (noteDifficultyArray[i, 2] > 1.7)
 								{
-									flowChecker[i] = 2;
+									flowChecker[i] = 3f;
 								}
 							}
 							if (notearray[i, 0] > 2 || notearray[i, 1] > 2 || notearray[i, 0] < 0 || notearray[i, 1] < 0)
@@ -466,11 +466,11 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 							}
 						}
 						else { flowChecker[i] = 2; }
-						noteDifficultyArray[i, 10] = -1;
+						noteDifficultyArray[i, 10] = -1 + noteDifficultyArray[i - 1, 10];
 					}
 					//Quantum Slider, or repetitive back and forth jumps/slides
 					//If Angle is 0, Uses 1 instead.
-					else if (u == 0 & h == 0 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 1; } else { flowChecker[i] = 2; } }
+					else if (u == 0 & h == 0 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 1; } else { flowChecker[i] = 4; } }
 					//Coming out of repetitive back and forth jumps, or a quantum slider
 					else if (u == 0 & h == 0 & b == -1) { flowChecker[i] = 2; }
 					else if (u == 0 & h == 0 & b == 1) { flowChecker[i] = 2; }
@@ -496,12 +496,25 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 						}
 						else
 						{
-							flowChecker[i] = 3;
+							flowChecker[i] = 2;
 						}
+						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];
 					}
-					else if (u == -1 & h == 0 & u == 1) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 3; } }
-					else if (u == 0 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 3; } }
-					else if (u == 0 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 3; } }
+					else if (u == -1 & h == 0 & u == -1)
+					{
+						if (noteDifficultyArray[i, 5] < 60)
+						{
+							flowChecker[i] = 6;
+						}
+						else
+						{
+							flowChecker[i] = 2;
+						}
+						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];
+					}
+					else if (u == -1 & h == 0 & u == 1) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
+					else if (u == 0 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
+					else if (u == 0 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
 					else { flowChecker[i] = 1; }
 				}
 			}
@@ -543,6 +556,10 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 							noteDifficultyArray[i, 2] = ((noteDifficultyArray[i, 2] - 2) * .4) + 2;
                         }
                     }
+                    if (noteDifficultyArray[i, 2] > 1.42 && noteDifficultyArray[i, 2] < 2 && Math.Abs(noteDifficultyArray[i, 10]) < 6)
+                    {
+						noteDifficultyArray[i, 2] = 1.2;
+                    } // Sets distance to 1.2 if under 2 distance, over 1.42 distance, and is a spin.
                     if (noteDifficultyArray[i, 2] < 2.83)
                     {
 						final *= Math.Pow(noteDifficultyArray[i, 2], 1.5) / 3.4; // Difficulty Based on Distance
@@ -561,13 +578,14 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 					{
 						double flow = 0;
 						flow = flowChecker[i] * 0.5 * (1 + (noteDifficultyArray[i, 5] / 240));
-						if (noteDifficultyArray[i, 2] > 1.2 && noteDifficultyArray[i, 2] < 2 && distanceoverN > 7) { flow *= 2; }
-						if (distanceoverN < 2) { final *= 0.9; }
+						if (noteDifficultyArray[i, 2] > 1.2 && noteDifficultyArray[i, 2] < 2 && distanceoverN > 7 && Math.Abs(noteDifficultyArray[i, 10]) < 10) { flow *= 2; }
+						if (Math.Abs(noteDifficultyArray[i, 10]) > 15) { flow = 0; }
+						Console.WriteLine(i + " " + noteDifficultyArray[i, 10]);
 						final *= 0.5 + flow;
 					} // Difficulty Based on Flow 
 
 					if (noteDifficultyArray[i, 3] > 0) { final = prevFinal / (2.3 + (noteDifficultyArray[i, 3] * .7)); } //Difficulty Based on Stack
-					if (noteDifficultyArray[i, 2] > 0.4 && noteDifficultyArray[i, 1] < 135) 
+					if (noteDifficultyArray[i, 2] > 0.4 && noteDifficultyArray[i, 1] < 135)
 					{
 						if (noteDifficultyArray[i, 5] < 45) 
 						{
@@ -579,11 +597,48 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 					final += 0.5;
 					final /= 3;
 					if (Double.IsNaN(final) == true) { final = 1; }
-					noteDifficultyArray[i, 7] = final ;
-					prevFinal = final ;
+					noteDifficultyArray[i, 7] = final;
+					prevFinal = final;
 					//Console.WriteLine(Math.Round(final, 2));
 				}
 				//Console.WriteLine(noteDifficultyArray[i, 7]);
+			}
+
+			int noteAmountBehind = 0;
+			for (int l = 0; l < noteDifficultyArray.GetLength(0); l++)
+			{
+				
+				if (noteAmountBehind < 32)
+				{
+					noteAmountBehind++;
+				}
+				double[,] tempDist = new double[noteAmountBehind, 3];
+				for (int j = 0; j < tempDist.GetLength(0); j++)
+				{
+					tempDist[j, 2] = noteDifficultyArray[l - j, 2]; //Gets Distance
+					tempDist[j, 1] = noteDifficultyArray[l - j, 1]; //Gets Time Since Last Note
+					tempDist[j, 0] = noteDifficultyArray[l - j, 0];
+					if (tempDist[j, 0] < noteDifficultyArray[l, 0] - 2000)
+					{
+						noteAmountBehind--;
+					}
+				}
+				if (l > 0)
+				{
+					
+					double totalDist = 0;
+					double totalTime = 0;
+					int notesChecked = 0;
+					while (totalDist < 7 && notesChecked < noteAmountBehind)
+					{
+						totalDist += tempDist[notesChecked, 2];
+						totalTime += tempDist[notesChecked, 1];
+						notesChecked++;
+					}
+					double totalSpeed = totalTime / totalDist;
+					double currentSpeed = noteDifficultyArray[l, 1] / noteDifficultyArray[l, 2];
+					//noteDifficultyArray[l, 7] *= Clamp(currentSpeed / totalSpeed, 0.85, 1);
+				}
 			}
 			//Console.WriteLine("");
 			//Console.WriteLine("Next up: Area Difficulty");
