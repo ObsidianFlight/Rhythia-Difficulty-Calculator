@@ -475,18 +475,18 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 					else if (u == 0 & h == 0 & b == -1) { flowChecker[i] = 2; }
 					else if (u == 0 & h == 0 & b == 1) { flowChecker[i] = 2; }
 					//The Wiggle Patterns.
-					else if (u == 1 & h == -1 & b == 1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 0; } else { flowChecker[i] = 2; } }
-					else if (u == -1 & h == 1 & b == -1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 0; } else { flowChecker[i] = 2; } }
+					else if (u == 1 & h == -1 & b == 1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 2; } else { flowChecker[i] = 1; } }
+					else if (u == -1 & h == 1 & b == -1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 2; } else { flowChecker[i] = 1; } }
 					//Most likely when flow is reversed, or the start of a slider, if flow is hard reversed the angle should be 0.
 					else if (u == -1 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1; } }
 					else if (u == 1 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1; } }
 					else if (u == 1 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 2; } }
 					else if (u == -1 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 2; } }
 					//Also reverses flow, I'm not sure how much emphasis I should be putting on these.
-					else if (u == 1 & h == 1 & b == -1) { flowChecker[i] = 4; }
-					else if (u == -1 & h == -1 & b == 1) { flowChecker[i] = 4; }
-					else if (u == 1 & h == -1 & b == -1) { flowChecker[i] = 4; }
-					else if (u == -1 & h == 1 & b == 1) { flowChecker[i] = 4; }
+					else if (u == 1 & h == 1 & b == -1) { flowChecker[i] = 2; }
+					else if (u == -1 & h == -1 & b == 1) { flowChecker[i] = 2; }
+					else if (u == 1 & h == -1 & b == -1) { flowChecker[i] = 2; }
+					else if (u == -1 & h == 1 & b == 1) { flowChecker[i] = 2; }
 					//Most likely in Spin Patterns, if not detected in a spin, increase by 3
 					else if (u == 1 & h == 0 & u == 1)
 					{
@@ -516,6 +516,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 					else if (u == 0 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
 					else if (u == 0 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
 					else { flowChecker[i] = 1; }
+					//Console.WriteLine($"{i}, {u} {h} {b}");
 				}
 			}
 
@@ -580,7 +581,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 						flow = flowChecker[i] * 0.5 * (1 + (noteDifficultyArray[i, 5] / 240));
 						if (noteDifficultyArray[i, 2] > 1.2 && noteDifficultyArray[i, 2] < 2 && distanceoverN > 7 && Math.Abs(noteDifficultyArray[i, 10]) < 10) { flow *= 2; }
 						if (Math.Abs(noteDifficultyArray[i, 10]) > 15) { flow = 0; }
-						Console.WriteLine(i + " " + noteDifficultyArray[i, 10]);
+						//Console.WriteLine(i + " " + noteDifficultyArray[i, 10]);
 						final *= 0.5 + flow;
 					} // Difficulty Based on Flow 
 
@@ -724,15 +725,40 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			maxDifficulty = Math.Round(maxDifficulty, 2);
 			MapInfo theData = new MapInfo();
 			theData.MapName = mapName;
-			theData.OverallDifficulty = overallDifficulty;
-			theData.AverageDifficulty = averageDifficulty;
-			theData.LowDifficulty = lowDifficulty;
-			theData.HighDifficulty = highDifficulty;
-			theData.MaxDifficulty = maxDifficulty;
+			theData.OverallDifficulty = Math.Round(ScaleNumber(overallDifficulty), 2);
+			theData.AverageDifficulty = Math.Round(ScaleNumber(averageDifficulty), 2);
+			theData.LowDifficulty = Math.Round(ScaleNumber(lowDifficulty), 2);
+			theData.HighDifficulty = Math.Round(ScaleNumber(highDifficulty), 2);
+			theData.MaxDifficulty = Math.Round(ScaleNumber(maxDifficulty), 2);
 			theData.mapdata = mapdata;
 			return theData;
 		}
+
+		//ChatGPT helped me with the idea for this cause I didn't know what it was called and brainstorming is hurting
+		static double ScaleNumber(double input)
+		{
+			if (input > 150)
+				return 7 + ((input - 150) / 50);
+			else if (input > 110)
+				return 6 + ((input - 110) / 40);
+			else if (input > 40)
+				return 5 + ((input - 40) / 70);
+			else if (input > 15)
+				return 4 + ((input - 15) / 25);
+			else if (input > 10)
+				return 3 + ((input - 10) / 5);
+			else if (input > 5)
+				return 2 + ((input - 5) / 5);
+			else if (input > 2)
+				return 1 + ((input - 2) / 3);
+			else if (input >= 0)
+				return input / 2;
+			else
+				return 0;
+		}
 	}
+
+
 
 	public class MapInfo
 	{
