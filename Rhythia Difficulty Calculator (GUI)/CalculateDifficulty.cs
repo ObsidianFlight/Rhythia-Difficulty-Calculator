@@ -276,7 +276,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			string[] notesraw = new string[mapraw.Length - 1];
 			Note[] theNoteList = new Note[notesraw.Length];
 			double[,] notearray = new double[notesraw.Length, 3];
-			double[,] noteDifficultyArray = new double[notesraw.Length, 11];
+			double[,] noteDifficultyArray = new double[notesraw.Length, 12];
 			for (int i = 0; i < notesraw.Length; i++)
 			{
 				notesraw[i] = mapraw[i + 1];
@@ -287,8 +287,8 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			int pp = 0;
 			foreach (var n in orderedNoteList)
             {
-				notearray[pp, 0] = n.X;
-				notearray[pp, 1] = n.Y;
+				notearray[pp, 0] = Clamp(n.X, -0.5, 2.5);
+				notearray[pp, 1] = Clamp(n.Y, -0.5, 2.5);
                 notearray[pp, 2] = n.Ms;
 				pp++;
 			}
@@ -385,10 +385,11 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 
 				if (i > 0)
 				{
-					double n = noteDifficultyArray[i - 1, 4];
-					if (n > 180) { n -= 360; }
-					double m = noteDifficultyArray[i, 4];
+					double m = noteDifficultyArray[i - (int)noteDifficultyArray[i, 3], 4];
 					if (m > 180) { m -= 360; }
+					int mh = i - 1 - (int)noteDifficultyArray[i, 3];
+					double n = noteDifficultyArray[mh - (int)noteDifficultyArray[mh, 3], 4];
+					if (n > 180) { n -= 360; }
 					double k = 0;
 					if (n > 0) { k = m - n; }
 					if (n < 0) { k = m - n; }
@@ -402,92 +403,209 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			}
 
 			float[] flowChecker = new float[noteDifficultyArray.GetLength(0)];
+			bool noteLock = true;
+			int u = 180;
+			int h = 180;
+			int b = 180;
+			int cwRotFlow = 0;
+			int prevCwRotFlow = 0;
+			int numberOfChanges = 0;
 			for (int i = 0; i < noteDifficultyArray.GetLength(0); i++)
 			{
 				if (i == 0 || i == 1) { flowChecker[i] = 2; }
 				else
 				{
-					int u = (int)noteDifficultyArray[i - 2, 6];
-					int h = (int)noteDifficultyArray[i - 1, 6];
-					int b = (int)noteDifficultyArray[i, 6];
+					if (i - 1 - (int)noteDifficultyArray[i - 1, 3] > 0)
+                    {
+						if( i - 2 - (int)noteDifficultyArray[i - 1, 3] - (int)noteDifficultyArray[i - 1 - (int)noteDifficultyArray[i - 1, 3], 3] > 0)
+						{
+							noteLock = false;
+						}
+						
+					}
+                    if (!noteLock)
+                    {
+						b = (int)noteDifficultyArray[i - (int)noteDifficultyArray[i, 3], 6];
+						int bn = i - 1 - (int)noteDifficultyArray[i, 3];
+						h = (int)noteDifficultyArray[bn - (int)noteDifficultyArray[bn, 3], 6];
+						int hn = bn - 1 - (int)noteDifficultyArray[bn, 3];
+						u = (int)noteDifficultyArray[hn - (int)noteDifficultyArray[hn, 3], 6];
+
+						//Console.WriteLine("u, " + (hn - (int)noteDifficultyArray[hn, 3]));
+						//Console.WriteLine("h, " + (bn - (int)noteDifficultyArray[bn, 3]));
+						//Console.WriteLine("b, " + (i - (int)noteDifficultyArray[i, 3]));
+					}
 
 					//Most likely when you are spinning
 					if (u == 1 & h == 1 & b == 1) 
 					{
 						if (i > 1)
 						{
-							if (notearray[i, 0] < 1.5 && notearray[i, 0] > 0.5)
-							{
-								flowChecker[i] = 2.5f;
-                                if (noteDifficultyArray[i, 2] > 1.7)
-                                {
-                                    flowChecker[i] = 2;
-                                }
-							}
-							else if (notearray[i, 1] < 1.5 && notearray[i, 1] > 0.5)
+							if (notearray[i, 0] < 1.5 && notearray[i, 0] > 0.5 && noteDifficultyArray[i, 2] > 0.88)
 							{
 								flowChecker[i] = 2.5f;
 								if (noteDifficultyArray[i, 2] > 1.7)
 								{
-                                    flowChecker[i] = 2;
+									flowChecker[i] = 2.5f;
+									if (noteDifficultyArray[i, 5] < 25)
+									{
+										flowChecker[i] = 6f;
+									}
+									else if (noteDifficultyArray[i, 5] < 45)
+									{
+										flowChecker[i] = 3f;
+									}
+								}
+							}
+							else if (notearray[i, 1] < 1.5 && notearray[i, 1] > 0.5 && noteDifficultyArray[i, 2] > 0.88)
+							{
+								flowChecker[i] = 2.5f;
+								if (noteDifficultyArray[i, 2] > 1.7)
+								{
+									flowChecker[i] = 2.5f;
+									if (noteDifficultyArray[i, 5] < 25)
+									{
+										flowChecker[i] = 6f;
+									}
+									else if (noteDifficultyArray[i, 5] < 45)
+									{
+										flowChecker[i] = 3f;
+									}
+								}
+							}
+							else
+							{
+								flowChecker[i] = 0f;
+								if (noteDifficultyArray[i, 2] > 1.7)
+								{
+									flowChecker[i] = 1.5f;
+									if (noteDifficultyArray[i, 5] < 25)
+									{
+										flowChecker[i] = 3f;
+									}
+									else if (noteDifficultyArray[i, 5] < 45)
+									{
+										flowChecker[i] = 1.5f;
+									}
 								}
 							}
 							if (notearray[i, 0] > 2 || notearray[i, 1] > 2 || notearray[i, 0] < 0 || notearray[i, 1] < 0)
                             {
-                                flowChecker[i] = 0;
+								flowChecker[i] *= 0.9f;
                             }
 						}
 						else { flowChecker[i] = 2; }
 						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i-1, 10];
+						cwRotFlow = 1;
 					}
 					else if (u == -1 & h == -1 & b == -1) {
 
 						if (i > 1)
 						{
-							if (notearray[i, 0] < 1.5 && notearray[i, 0] > 0.5)
+							if (notearray[i, 0] < 1.5 && notearray[i, 0] > 0.5 && noteDifficultyArray[i, 2] > 0.88)
 							{
 								flowChecker[i] = 2.5f;
 								if (noteDifficultyArray[i, 2] > 1.7)
 								{
-									flowChecker[i] = 3f;
+									flowChecker[i] = 2.5f;
+									if (noteDifficultyArray[i, 5] < 25)
+									{
+										flowChecker[i] = 6f;
+									}
+									else if (noteDifficultyArray[i, 5] < 45)
+									{
+										flowChecker[i] = 3f;
+									}
 								}
 							}
-							else if (notearray[i, 1] < 1.5 && notearray[i, 1] > 0.5)
+							else if (notearray[i, 1] < 1.5 && notearray[i, 1] > 0.5 && noteDifficultyArray[i, 2] > 0.88)
 							{
 								flowChecker[i] = 2.5f;
 								if (noteDifficultyArray[i, 2] > 1.7)
 								{
-									flowChecker[i] = 3f;
+									flowChecker[i] = 2.5f;
+									if (noteDifficultyArray[i, 5] < 25)
+									{
+										flowChecker[i] = 6f;
+									}
+									else if (noteDifficultyArray[i, 5] < 45)
+									{
+										flowChecker[i] = 3f;
+									}
+								}
+							}
+                            else
+                            {
+								flowChecker[i] = 0f;
+								if (noteDifficultyArray[i, 2] > 1.7)
+								{
+									flowChecker[i] = 1.5f;
+									if (noteDifficultyArray[i, 5] < 25)
+									{
+										flowChecker[i] = 3f;
+									}
+									else if (noteDifficultyArray[i, 5] < 45)
+									{
+										flowChecker[i] = 1.5f;
+									}
 								}
 							}
 							if (notearray[i, 0] > 2 || notearray[i, 1] > 2 || notearray[i, 0] < 0 || notearray[i, 1] < 0)
 							{
-								flowChecker[i] = 0;
+								flowChecker[i] *= 0.9f;
 							}
 						}
 						else { flowChecker[i] = 2; }
-						noteDifficultyArray[i, 10] = -1 + noteDifficultyArray[i - 1, 10];
+						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];
+						cwRotFlow = -1;
 					}
 					//Quantum Slider, or repetitive back and forth jumps/slides
 					//If Angle is 0, Uses 1 instead.
-					else if (u == 0 & h == 0 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 1; } else { flowChecker[i] = 4; } }
+					else if (u == 0 & h == 0 & b == 0) 
+					{ 
+						if (noteDifficultyArray[i, 5] == 0) 
+						{
+							flowChecker[i] = 3f;
+							if (noteDifficultyArray[i, 2] >= 1.4)
+                            {
+								flowChecker[i] = 3f;
+                            }
+						} 
+						else 
+						{
+							if (noteDifficultyArray[i, 2] >= 0.95)
+							{
+								flowChecker[i] = 3;
+							}
+							else
+							{
+								flowChecker[i] = 4;
+							}
+						} 
+					}
+					//Spiral?
+					else if (u == -1 & h == 0 & u == 1) { flowChecker[i] = 2; }
+					else if (u == 1 & h == 0 & u == -1) { flowChecker[i] = 2; }
 					//Coming out of repetitive back and forth jumps, or a quantum slider
-					else if (u == 0 & h == 0 & b == -1) { flowChecker[i] = 2; }
-					else if (u == 0 & h == 0 & b == 1) { flowChecker[i] = 2; }
+					else if (u == 0 & h == 0 & b == -1) { flowChecker[i] = 1.8f; }
+					else if (u == 0 & h == 0 & b == 1) { flowChecker[i] = 1.8f; }
 					//The Wiggle Patterns.
-					else if (u == 1 & h == -1 & b == 1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 2; } else { flowChecker[i] = 1; } }
-					else if (u == -1 & h == 1 & b == -1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 2; } else { flowChecker[i] = 1; } }
-					//Most likely when flow is reversed, or the start of a slider, if flow is hard reversed the angle should be 0.
-					else if (u == -1 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1; } }
-					else if (u == 1 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1; } }
+					else if (u == 1 & h == -1 & b == 1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 3f; } else { flowChecker[i] = 2f; } }
+					else if (u == -1 & h == 1 & b == -1) { if (noteDifficultyArray[i, 2] > 1.7) { flowChecker[i] = 3f; } else { flowChecker[i] = 2f; } }
+					//Most likely when flow is reversed, or in spirals, if flow is hard reversed the angle should be 0.
+					else if (u == -1 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1.7f; } noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];  }
+					else if (u == 1 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1.7f; } noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];  }
+					else if (u == 0 & h == 1 & b == 1) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1f; } }
+					else if (u == 0 & h == -1 & b == -1) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 1f; } }
+					//Sliders?
 					else if (u == 1 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 2; } }
 					else if (u == -1 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] == 0) { flowChecker[i] = 4; } else { flowChecker[i] = 2; } }
 					//Also reverses flow, I'm not sure how much emphasis I should be putting on these.
-					else if (u == 1 & h == 1 & b == -1) { flowChecker[i] = 2; }
-					else if (u == -1 & h == -1 & b == 1) { flowChecker[i] = 2; }
+					else if (u == 1 & h == 1 & b == -1) { flowChecker[i] = 2f; }
+					else if (u == -1 & h == -1 & b == 1) { flowChecker[i] = 2f; }
 					else if (u == 1 & h == -1 & b == -1) { flowChecker[i] = 2; }
 					else if (u == -1 & h == 1 & b == 1) { flowChecker[i] = 2; }
-					//Most likely in Spin Patterns, if not detected in a spin, increase by 3
+					//Most likely in Spin Patterns, if not detected in a spin, increase
 					else if (u == 1 & h == 0 & u == 1)
 					{
 						if (noteDifficultyArray[i, 5] < 60)
@@ -496,7 +614,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 						}
 						else
 						{
-							flowChecker[i] = 2;
+							flowChecker[i] = 1.4f;
 						}
 						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];
 					}
@@ -508,14 +626,31 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 						}
 						else
 						{
-							flowChecker[i] = 2;
+							flowChecker[i] = 1.4f;
 						}
 						noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10];
 					}
-					else if (u == -1 & h == 0 & u == 1) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
-					else if (u == 0 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
-					else if (u == 0 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 2; } }
+					else if (u == 0 & h == 1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 1f; } noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10]; }
+					else if (u == 0 & h == -1 & b == 0) { if (noteDifficultyArray[i, 5] < 60) { flowChecker[i] = 6; } else { flowChecker[i] = 1f; } noteDifficultyArray[i, 10] = 1 + noteDifficultyArray[i - 1, 10]; }
 					else { flowChecker[i] = 1; }
+
+					if (i > 4)
+					{
+						if (noteDifficultyArray[i - 3, 10] > 0 && noteDifficultyArray[i, 10] > 0 && cwRotFlow == -1 && prevCwRotFlow == 1)
+						{
+							noteDifficultyArray[i, 11] = 1;
+							numberOfChanges++;
+							//Console.WriteLine(" " + numberOfChanges + "  " + (i + 1) + ", " + noteDifficultyArray[i, 11]);
+						}
+						if (noteDifficultyArray[i - 3, 10] > 0 && noteDifficultyArray[i, 10] > 0 && cwRotFlow == 1 && prevCwRotFlow == -1)
+						{
+							noteDifficultyArray[i, 11] = 1;
+							numberOfChanges++;
+							//Console.WriteLine(" " + numberOfChanges + "  " + (i + 1) + ", " + noteDifficultyArray[i, 11]);
+						}
+						if (prevCwRotFlow != cwRotFlow) { prevCwRotFlow = cwRotFlow; }
+					}
+
 					//Console.WriteLine($"{i}, {u} {h} {b}");
 				}
 			}
@@ -546,46 +681,48 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                     {
 						if (noteDifficultyArray[i, 3] == 0 && noteDifficultyArray[i-1, 3] > 0)
                         {
-							noteDifficultyArray[i, 1] += noteDifficultyArray[i - 1, 1] / 2;
-                        }
+							//noteDifficultyArray[i, 1] += noteDifficultyArray[i - 1, 1] / 1.5;
+							noteDifficultyArray[i, 1] += (noteDifficultyArray[i, 0] - noteDifficultyArray[i - (int)noteDifficultyArray[i - 1, 3], 0]) / 2;
+						}
 					}//Increases time since last note if the previous note was a stack
 					final = Math.Pow(Math.Pow(Clamp(noteDifficultyArray[i, 1] / 1000, 0.02, 9999), -.5), 3.5) / 3.5; // Difficulty Based on Time
-                    if (noteDifficultyArray[i, 5] < 30 || 150 < noteDifficultyArray[i, 5])
+                    /*if (noteDifficultyArray[i, 5] < 30 || 150 < noteDifficultyArray[i, 5])
                     {
                         if (noteDifficultyArray[i, 2] > 2.25)
                         {
 							noteDifficultyArray[i, 2] = ((noteDifficultyArray[i, 2] - 2) * .4) + 2;
                         }
-                    }
-                    if (noteDifficultyArray[i, 2] > 1.42 && noteDifficultyArray[i, 2] < 2 && Math.Abs(noteDifficultyArray[i, 10]) < 6)
+                    }*/
+                    if (noteDifficultyArray[i, 2] > 1.42 && noteDifficultyArray[i, 2] < 1.95 && Math.Abs(noteDifficultyArray[i, 10]) < 6)
                     {
 						noteDifficultyArray[i, 2] = 1.2;
-                    } // Sets distance to 1.2 if under 2 distance, over 1.42 distance, and is a spin.
-                    if (noteDifficultyArray[i, 2] < 2.83)
+                    } // Sets distance to 1.2 if under 1.95 distance, over 1.42 distance, and is a spin.
+                    if (noteDifficultyArray[i, 2] > 1)
                     {
-						final *= Math.Pow(noteDifficultyArray[i, 2], 1.5) / 3.4; // Difficulty Based on Distance
+						final *= Math.Pow(noteDifficultyArray[i, 2], 1.24) / 3.4; // Difficulty Based on Distance
                     }
                     else
                     {
-						final *= (Math.Pow(2.83, 1.5) / 3.4) + (Math.Pow(noteDifficultyArray[i, 2] - 1.83, 1.2) / 3.4);
-                    }
+						final *= noteDifficultyArray[i, 2] / 3.4;
+					}
 					
-					if (noteDifficultyArray[i, 2] < 1.1) { final *= 1.2; }
+					if (noteDifficultyArray[i, 2] < 1.1) { final *= 1.1; }
 					else if (noteDifficultyArray[i, 2] < 1.8 && noteDifficultyArray[i, 5] > 70) { final *= 0.8; }
-					else if (noteDifficultyArray[i, 2] > 1.9) { final *= 1.1; }
-					if (noteDifficultyArray[i, 2] > 2.5) { final *= 0.8; }
+					//else if (noteDifficultyArray[i, 2] > 1.9) { final *= 1.1; }
+					//if (noteDifficultyArray[i, 2] > 2.5) { final *= 0.8; }
 					if (distanceoverN < 3 || noteDifficultyArray[i, 3] > 0) { final *= 0.85; } 
 					else
 					{
 						double flow = 0;
 						flow = flowChecker[i] * 0.5 * (1 + (noteDifficultyArray[i, 5] / 240));
-						if (noteDifficultyArray[i, 2] > 1.2 && noteDifficultyArray[i, 2] < 2 && distanceoverN > 7 && Math.Abs(noteDifficultyArray[i, 10]) < 10) { flow *= 2; }
-						if (Math.Abs(noteDifficultyArray[i, 10]) > 15) { flow = 0; }
+						if (noteDifficultyArray[i, 2] > 1.2 && noteDifficultyArray[i, 2] < 2 && distanceoverN > 7 && Math.Abs(noteDifficultyArray[i, 10]) < 10) { flow *= 1.8; }
+						if (Math.Abs(noteDifficultyArray[i, 10]) > 12 && noteDifficultyArray[i, 2] < 1.9) { flow *= 0.3; }
+						if (Math.Abs(noteDifficultyArray[i, 10]) > 6 && noteDifficultyArray[i, 2] < 1.9) { flow -= flow * (Clamp(noteDifficultyArray[i, 10] - 6, 1, 6) / 12); }
 						//Console.WriteLine(i + " " + noteDifficultyArray[i, 10]);
 						final *= 0.5 + flow;
 					} // Difficulty Based on Flow 
 
-					if (noteDifficultyArray[i, 3] > 0) { final = prevFinal / (2.3 + (noteDifficultyArray[i, 3] * .7)); } //Difficulty Based on Stack
+					if (noteDifficultyArray[i, 3] > 0) { final = prevFinal / (1 + (noteDifficultyArray[i, 3] * 2)); } //Difficulty Based on Stack
 					if (noteDifficultyArray[i, 2] > 0.4 && noteDifficultyArray[i, 1] < 135)
 					{
 						if (noteDifficultyArray[i, 5] < 45) 
@@ -594,7 +731,6 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 						}
 						final *= 2.5 - (noteDifficultyArray[i, 5] - 180) * 0.5 / 180 * (Math.Abs(Clamp(noteDifficultyArray[i, 2], 1, 2) - 0.7) * 3); 
 					} //Difficulty based on angle
-					final *= Clamp(1 + (1 - noteDifficultyArray[i, 8]), 1, 1.5); // Difficulty based on distance from center
 					final += 0.5;
 					final /= 3;
 					if (Double.IsNaN(final) == true) { final = 1; }
@@ -605,42 +741,6 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 				//Console.WriteLine(noteDifficultyArray[i, 7]);
 			}
 
-			int noteAmountBehind = 0;
-			for (int l = 0; l < noteDifficultyArray.GetLength(0); l++)
-			{
-				
-				if (noteAmountBehind < 32)
-				{
-					noteAmountBehind++;
-				}
-				double[,] tempDist = new double[noteAmountBehind, 3];
-				for (int j = 0; j < tempDist.GetLength(0); j++)
-				{
-					tempDist[j, 2] = noteDifficultyArray[l - j, 2]; //Gets Distance
-					tempDist[j, 1] = noteDifficultyArray[l - j, 1]; //Gets Time Since Last Note
-					tempDist[j, 0] = noteDifficultyArray[l - j, 0];
-					if (tempDist[j, 0] < noteDifficultyArray[l, 0] - 2000)
-					{
-						noteAmountBehind--;
-					}
-				}
-				if (l > 0)
-				{
-					
-					double totalDist = 0;
-					double totalTime = 0;
-					int notesChecked = 0;
-					while (totalDist < 7 && notesChecked < noteAmountBehind)
-					{
-						totalDist += tempDist[notesChecked, 2];
-						totalTime += tempDist[notesChecked, 1];
-						notesChecked++;
-					}
-					double totalSpeed = totalTime / totalDist;
-					double currentSpeed = noteDifficultyArray[l, 1] / noteDifficultyArray[l, 2];
-					//noteDifficultyArray[l, 7] *= Clamp(currentSpeed / totalSpeed, 0.85, 1);
-				}
-			}
 			//Console.WriteLine("");
 			//Console.WriteLine("Next up: Area Difficulty");
 			//Console.WriteLine("");
@@ -653,26 +753,45 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			double[] noteDifficulty = new double[noteDifficultyArray.GetLength(0)];
 			for (int i = 0; i < noteDifficultyArray.GetLength(0); i++)
 			{
-				if (notesBehind < 32) 
+				if (notesBehind < 40) 
 				{
 					notesBehind++; 
 				}
-				double[,] tempDiff = new double[notesBehind, 2];
+				double[,] tempDiff = new double[notesBehind, 4];
 				for (int j = 0; j < tempDiff.GetLength(0); j++)
 				{
 					tempDiff[j, 0] = noteDifficultyArray[i - j, 0]; //Gets Time in Song
 					tempDiff[j, 1] = noteDifficultyArray[i - j, 7]; //Gets Difficulty
-					if (tempDiff[j, 0] < noteDifficultyArray[i, 0] - 2000)
+					tempDiff[j, 2] = noteDifficultyArray[i - j, 11]; //Gets Spin Direction Changes
+					tempDiff[j, 3] = noteDifficultyArray[i - j, 2]; //Gets Distance
+
+					if (tempDiff[j, 0] < noteDifficultyArray[i, 0] - 4000)
 					{
 						notesBehind--;
 					}
 				}
 				double tempMaxDifficulty = 0;
+				double rFlow = 0;
+				double distanceSinceLast = 0;
+				bool dLock = false;
+				bool fLock = false;
 				for (int j = 0; j < tempDiff.GetLength(0); j++)
 				{
-					tempMaxDifficulty += tempDiff[j, 1];
+					rFlow += tempDiff[j, 2];
+					if (tempDiff[j, 2] != 0 && dLock == false && fLock == true) { distanceSinceLast += tempDiff[j, 3]; }
+                    else if(tempDiff[j, 2] != 0 && fLock == true) { dLock = true; }
+					if(tempDiff[j, 2] != 0) { fLock = true; }
 				}
-				tempMaxDifficulty /= 4;
+				if (rFlow > 0)
+				{
+					rFlow *= Clamp(distanceSinceLast / 32, 0, 1);
+					//Console.WriteLine((i + 1) + ", " + rFlow);
+				}
+				for (int j = 0; j < tempDiff.GetLength(0); j++)
+				{
+					tempMaxDifficulty += tempDiff[j, 1] * (1 + (0.024 * rFlow));
+				}
+				tempMaxDifficulty /= 5;
 				if (tempMaxDifficulty > prevTempDiff)
 				{
 					tempMaxDifficulty -= Math.Log(tempMaxDifficulty - prevTempDiff);
@@ -688,7 +807,6 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 				averageDifficulty += tempMaxDifficulty;
 				noteDifficulty[i] = tempMaxDifficulty;
 			}
-			Console.WriteLine($"Song: {mapName}, Max Difficulty: {Math.Round(maxDifficulty / 4, 2)} At: {timeOfMaxDifficulty}, Note: {noteNumberOfMaxDifficulty}");
 			double overallDifficulty;
 			double highDifficulty = 0;
 			int highIndex = 0;
@@ -730,6 +848,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 			theData.LowDifficulty = Math.Round(ScaleNumber(lowDifficulty), 2);
 			theData.HighDifficulty = Math.Round(ScaleNumber(highDifficulty), 2);
 			theData.MaxDifficulty = Math.Round(ScaleNumber(maxDifficulty), 2);
+			Console.WriteLine($"Song: {mapName}, Max Difficulty: {theData.MaxDifficulty} At: {timeOfMaxDifficulty}, Note: {noteNumberOfMaxDifficulty}, Note Count: {noteDifficultyArray.GetLength(0)}");
 			theData.mapdata = mapdata;
 			return theData;
 		}
@@ -737,21 +856,19 @@ namespace Rhythia_Difficulty_Calculator__GUI_
 		//ChatGPT helped me with the idea for this cause I didn't know what it was called and brainstorming is hurting
 		static double ScaleNumber(double input)
 		{
-			if (input > 150)
-				return 7 + ((input - 150) / 50);
-			else if (input > 110)
-				return 6 + ((input - 110) / 40);
-			else if (input > 40)
-				return 5 + ((input - 40) / 70);
-			else if (input > 15)
+			if (input > 75) //Hard Logic and Above
+				return 6 + ((input - 75) / 50);
+			else if (input > 40) //Medium Logic and Above
+				return 5 + ((input - 40) / 35);
+			else if (input > 15) //Easy Logic
 				return 4 + ((input - 15) / 25);
-			else if (input > 10)
+			else if (input > 10) //Hard
 				return 3 + ((input - 10) / 5);
-			else if (input > 5)
+			else if (input > 5) //Medium
 				return 2 + ((input - 5) / 5);
-			else if (input > 2)
+			else if (input > 2) //Easy
 				return 1 + ((input - 2) / 3);
-			else if (input >= 0)
+			else if (input >= 0) //Impossibly easy? Did I even code it to get this low...?
 				return input / 2;
 			else
 				return 0;

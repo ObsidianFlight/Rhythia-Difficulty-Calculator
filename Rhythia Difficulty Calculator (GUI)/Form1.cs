@@ -51,7 +51,7 @@ namespace Rhythia_Difficulty_Calculator__GUI_
                             if (".sspm" == Path.GetExtension(file))
                             {
                                 string mapdata = CalculateDifficulty.Parse(file);
-                                Console.WriteLine(mapdata);
+                                //Console.WriteLine(mapdata);
                                 mapList.Add(CalculateDifficulty.ConvertMapNew(mapdata, speedmodifier, false, " "));
                                 UpdateTextbox();
                             }
